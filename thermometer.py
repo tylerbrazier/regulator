@@ -19,7 +19,7 @@ def ts():
     return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
 def fail(msg):
-    print(msg, file=sys.stderr)
+    print(msg, file=sys.stderr, flush=True)
     exit(1)
 
 if len(sys.argv) not in (2,3):
@@ -43,13 +43,13 @@ else:
     device_file = dir_glob[0] + '/w1_slave'
 
 
-print('Timestamp\t\tC\tF', file=sys.stderr)
+print('Timestamp\t\tC\tF', file=sys.stderr, flush=True)
 while True:
     with open(device_file, 'r') as f:
         line = f.readline().strip()
         if line[-3:] != 'YES':
             msg = 'crc checksum mismatch; retrying in {}s'.format(retry_delay)
-            print(ts(), msg, file=sys.stderr)
+            print(ts(), msg, file=sys.stderr, flush=True)
             time.sleep(retry_delay)
             continue
 
