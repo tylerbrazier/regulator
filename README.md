@@ -21,7 +21,24 @@ To control the relay based on the temperature, pipe the output of
 `thermometer.py` to `regulator.py`. See `run.sh`. Note that the regulator
 script requires [RPi.GPIO][3].
 
+Web
+---
+The project also includes a little web server that can be queried for logs
+and their statistics for any given period of time. Plots can also be generated
+using [plot.ly][4].
+
+Start the server on port 8080:
+
+    node web/index.js logs/stdout.log PLOTLY_USER  PLOTLY_API_KEY
+
+To see stats for the last 2 hours with a plot: `/stats?period=2h&plot=true`.
+Period measures are: `m = minutes, h = hours, d = days, w = weeks`.
+If no period is given, the default is `1d`.
+
+Logs are at `/logs`.
+
 [0]: https://www.adafruit.com/products/268
 [1]: https://www.adafruit.com/products/381
 [2]: https://learn.adafruit.com/adafruits-raspberry-pi-lesson-11-ds18b20-temperature-sensing/overview
 [3]: https://pypi.python.org/pypi/RPi.GPIO
+[4]: https://plot.ly

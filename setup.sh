@@ -1,5 +1,6 @@
 #!/bin/bash
 set -eu
+cd "$(dirname "$0")"
 
 # configure w1-gpio module to use pin 4 by default. for more info:
 # https://github.com/raspberrypi/firmware/blob/master/boot/overlays/README
@@ -16,5 +17,8 @@ w1-gpio
 w1-therm
 ' > "$modfile"
 
+# set up web stuff
+cd web
+npm install
 
 echo "Remember to reboot!"

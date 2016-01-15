@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Stats</title>
+  </head>
+
+  <body>
+    <p>start: <%=start%></p>
+    <p>end: <%=end%></p>
+    <p>min: <%=min.toFixed(1)%>C (<%=(min*9/5+32).toFixed(1)%>F)</p>
+    <p>max: <%=max.toFixed(1)%>C (<%=(max*9/5+32).toFixed(1)%>F)</p>
+    <p>average: <%=average.toFixed(1)%>C (<%=(average*9/5+32).toFixed(1)%>F)</p>
+    <p><%=points%> measurements</p>
+    <% if (plot) {%>
+    <p><a target="_blank" href=<%-plot%>>plot</a></p>
+    <% } %>
+  </body>
+</html>

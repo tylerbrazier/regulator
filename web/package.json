@@ -1,0 +1,16 @@
+{
+  "name": "regulator",
+  "version": "0.0.0",
+  "description": "Monitor and regulate freezer temperature with raspberry pi",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tylerbrazier/regulator.git"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "serve-index": "^1.7.2"
+  }
+}
