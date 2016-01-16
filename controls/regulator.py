@@ -7,8 +7,9 @@ import sys
 import datetime
 import RPi.GPIO as GPIO
 
-pin = 17
 usage = 'Usage: {} <lower_bound_C> <upper_bound_C>'.format(sys.argv[0])
+pin = 17
+initial = GPIO.LOW
 
 def ts():
     return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
@@ -25,25 +26,31 @@ try:
     upper = float(sys.argv[2])
 except ValueError:
     fail('lower and upper bounds must be numbers')
-if lower >= upper:
+if lower > upper:
     fail('lower bound must be less than upper bound')
 
 GPIO.setmode(GPIO.BCM)
-GPIO.setup(pin, GPIO.OUT, initial=GPIO.LOW)
+GPIO.setup(pin, GPIO.OUT, initial=initial)
+state = initial
 try:
     while True:
         line = sys.stdin.readline().strip()
-        print(line, flush=True)
+        print(line, flush=True) # re-echo stdin to stdout
+
         # line format is: timestamp[tab]degrees_c[tab]degrees_f
         c = float(line.split('\t')[1])
-        if c <= lower:
-            msg = '{} <= {}\tpower off'.format(c, lower)
-            print(ts(), msg, file=sys.stderr, flush=True)
+        if c <= lower and state == GPIO.HIGH:
+            msg = '{} <= {}'.format(c, lower)
+            print(ts(), msg, 'power off', file=sys.stderr, flush=True, sep='\t')
             GPIO.output(pin, GPIO.LOW)
-        elif c >= upper:
-            msg = '{} >= {}\tpower on'.format(c, upper)
-            print(ts(), msg, file=sys.stderr, flush=True)
+            state = GPIO.LOW
+        elif c >= upper and state == GPIO.LOW:
+            msg = '{} >= {}'.format(c, upper)
+            print(ts(), msg, 'power on', file=sys.stderr, flush=True, sep='\t')
             GPIO.output(pin, GPIO.HIGH)
+            state = GPIO.HIGH
+except KeyboardInterrupt:
+    pass # don't show stacktrace on ctrl-c
 finally:
-    print(ts(), 'cleaning up GPIO', file=sys.stderr, flush=True)
+    print(ts(), 'stopping regulator', file=sys.stderr, flush=True, sep='\t')
     GPIO.cleanup()

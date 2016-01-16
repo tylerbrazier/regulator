@@ -2,6 +2,7 @@
 
 # Outputs temperature readings at regular intervals.
 # Data is printed to stdout. Everything else goes to stderr.
+# stdout format is: timestamp[tab]degrees_c[tab]degrees_f
 
 # More info about the driver for the temperature sensor at
 # https://www.kernel.org/doc/Documentation/w1/slaves/w1_therm
@@ -12,8 +13,8 @@ import time
 import sys
 import datetime
 
-retry_delay = 4  # how long to wait for retry on checksum mismatch
-usage = 'Usage: {} <interval_seconds> [filename]'.format(sys.argv[0])
+retry = 4  # how many seconds to wait for retry on checksum mismatch
+usage = 'Usage: {} <interval_seconds> [w1_file]'.format(sys.argv[0])
 
 def ts():
     return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
@@ -43,20 +44,24 @@ else:
     device_file = dir_glob[0] + '/w1_slave'
 
 
-print('Timestamp\t\tC\tF', file=sys.stderr, flush=True)
-while True:
-    with open(device_file, 'r') as f:
-        line = f.readline().strip()
-        if line[-3:] != 'YES':
-            msg = 'crc checksum mismatch; retrying in {}s'.format(retry_delay)
-            print(ts(), msg, file=sys.stderr, flush=True)
-            time.sleep(retry_delay)
-            continue
+try:
+    while True:
+        with open(device_file, 'r') as f:
+            line = f.readline().strip()
+            if line[-3:] != 'YES':
+                msg = 'crc checksum mismatch; retrying in {}s'.format(retry)
+                print(ts(), msg, file=sys.stderr, flush=True, sep='\t')
+                time.sleep(retry)
+                continue
 
-        line = f.readline().strip()
-        t_index = line.find('t=')
-        t_millidegrees = float(line[t_index+2:])
-        t_c = t_millidegrees / 1000.0
-        t_f = t_c * 9.0 / 5.0 + 32.0
-        print(ts(), t_c, t_f, sep='\t', flush=True)
-    time.sleep(interval)
+            line = f.readline().strip()
+            t_index = line.find('t=')
+            t_millidegrees = float(line[t_index+2:])
+            t_c = t_millidegrees / 1000.0
+            t_f = t_c * 9.0 / 5.0 + 32.0
+            print(ts(), t_c, t_f, sep='\t', flush=True)
+        time.sleep(interval)
+except KeyboardInterrupt:
+    pass # don't show stacktrace on ctrl-c
+finally:
+    print(ts(), 'stopping thermometer', flush=True, sep='\t', file=sys.stderr)
