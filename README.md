@@ -2,18 +2,19 @@ Regulator
 =========
 Monitor and regulate freezer temperature with raspberry pi. I started this
 project because my chest freezer's highest temperature setting is still too cold
-to keep my homebrew chilled. The goal is to be able to monitor temperature with
-pi and have the freezer's power regulated with a relay.
+to keep my homebrew chilled, so I want to regulate the power with a relay.
 
-The project also includes a little web server that can be queried for logs
-and their statistics for any given period of time. Plots can also be generated
-using [plot.ly][0].
+There's also a little web server for serving up logs and their statistics for
+any given period of time. Plots can also be generated using [plot.ly][0].
 
 Setup
 -----
-I got most of my hardware from Adafruit, including the [relay][1] and
+I got most of the hardware from Adafruit, including the [relay][1] and
 [temperature sensor][2]. They also have a really nice [guide][3] that I
-followed for using the sensor. I've only tested this project on [Arch linux][4].
+followed for using the sensor.
+
+I'm running [Arch linux][4] on my pi so I haven't tested any of this with
+Raspbian or other distros.
 
 Install nodejs, python 3, and [RPi.GPIO][5]. Run `setup.sh` as root to
 configure kernel modules and install web dependencies. Then reboot the pi.
