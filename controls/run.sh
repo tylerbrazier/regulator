@@ -12,8 +12,8 @@ lower_bound=4
 upper_bound=8
 
 # where to put the logs
-stdout=../logs/temperature.out
-stderr=../logs/temperature.err
+stdout=../logs/temperature.out.txt
+stderr=../logs/temperature.err.txt
 
 python3 thermometer.py "$interval" 2>>"$stderr" | \
   sudo python3 regulator.py "$lower_bound" "$upper_bound" 2>>"$stderr" >>"$stdout"
