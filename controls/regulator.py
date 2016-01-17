@@ -34,8 +34,8 @@ GPIO.setup(pin, GPIO.OUT, initial=initial)
 state = initial
 try:
     while True:
-        line = sys.stdin.readline().strip()
-        print(line, flush=True) # re-echo stdin to stdout
+        line = sys.stdin.readline()
+        print(line, end='', flush=True) # re-echo stdin to stdout
 
         # line format is: timestamp[tab]degrees_c[tab]degrees_f
         c = float(line.split('\t')[1])

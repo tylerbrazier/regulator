@@ -32,6 +32,25 @@ If no period is given, the default is `1d`.
 
 Logs are at `http://<pi's IP>:8080/logs`.
 
+Service files
+-------------
+The project also includes systemd service files for daemonizing the regulator
+and web server. Edit them as needed, then as root:
+
+    cp systemd/* /etc/systemd/system/
+
+    # start them:
+    systemctl start regulator-controls
+    systemctl start regulator-web
+
+    # make sure they're working:
+    systemctl status regulator-controls
+    systemctl status regulator-web
+
+    # to have them start at boot:
+    systemctl enable regulator-controls
+    systemctl enable regulator-web
+
 [0]: https://plot.ly
 [1]: https://www.adafruit.com/products/268
 [2]: https://www.adafruit.com/products/381

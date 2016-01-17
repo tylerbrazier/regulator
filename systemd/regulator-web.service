@@ -1,0 +1,13 @@
+[Unit]
+Description=Web server for temperature data
+Requires=network.target
+After=network.target
+
+[Service]
+User=pi
+ExecStart=/home/pi/regulator/web/run.sh
+Restart=always
+RestartSec=30
+
+[Install]
+WantedBy=multi-user.target
