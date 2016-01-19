@@ -19,38 +19,41 @@ usage = 'Usage: {} <interval_seconds> [w1_file]'.format(sys.argv[0])
 def ts():
     return datetime.datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
 
-def fail(msg):
-    print(msg, file=sys.stderr, flush=True)
-    exit(1)
+def stderr(*messages):
+    print(ts() + '\t' + '\t'.join(messages), file=sys.stderr, flush=True)
 
 if len(sys.argv) not in (2,3):
-    fail(usage)
+    stderr(usage)
+    exit(1)
 
 try:
     interval = int(sys.argv[1])
 except ValueError:
-    fail('interval must be an integer')
+    stderr('interval must be an integer')
+    exit(1)
 if interval <= 0:
-    fail('interval should be > 0')
+    stderr('interval should be > 0')
+    exit(1)
 
 if len(sys.argv) == 3:
     device_file = sys.argv[2]
 else:
     # try to automatically look up the file
-    dir_pattern = '/sys/bus/w1/devices/28*'
-    dir_glob = glob.glob(dir_pattern)
+    dir_pat = '/sys/bus/w1/devices/28*'
+    dir_glob = glob.glob(dir_pat)
     if len(dir_glob) != 1:
-        fail('found {} matching dirs for {}'.format(len(dir_glob),dir_pattern))
+        stderr('found {} matching dirs for {}'.format(len(dir_glob), dir_pat))
+        exit(1)
     device_file = dir_glob[0] + '/w1_slave'
 
 
 try:
+    stderr('starting thermometer')
     while True:
         with open(device_file, 'r') as f:
             line = f.readline().strip()
             if line[-3:] != 'YES':
-                msg = 'crc checksum mismatch; retrying in {}s'.format(retry)
-                print(ts(), msg, file=sys.stderr, flush=True, sep='\t')
+                stderr('bad crc checksum; retrying in {}s'.format(retry))
                 time.sleep(retry)
                 continue
 
@@ -64,4 +67,4 @@ try:
 except KeyboardInterrupt:
     pass # don't show stacktrace on ctrl-c
 finally:
-    print(ts(), 'stopping thermometer', flush=True, sep='\t', file=sys.stderr)
+    stderr('stopping thermometer')
