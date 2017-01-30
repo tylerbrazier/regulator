@@ -52,6 +52,11 @@ and web server. Edit them as needed, then as root:
     systemctl enable regulator-controls
     systemctl enable regulator-web
 
+TODO
+----
+Add pics of the UI and graphs of regulated and unregulated freezer temps.
+
+
 [0]: https://plot.ly
 [1]: https://www.adafruit.com/products/268
 [2]: https://www.adafruit.com/products/381
